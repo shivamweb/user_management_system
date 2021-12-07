@@ -6,12 +6,12 @@ use App\Models\records;
 use App\Models\UserVerify;
 use Exception;
 use Image;
-use Mail;
-use Hash;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Contracts\Session\Session;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth; 
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Response;
 
 
@@ -24,13 +24,10 @@ class RecordsController extends Controller
      */
     public function index()
     {
-        if (Auth::check()) {
-            //to display the list of records
-            $id = Auth::user()->id;
-            $record = records::findorfail($id);
-            return view('records', compact('record'));
-        }
-        return redirect("login")->withSuccess('Opps! You do not have access');
+        $id = auth()->guard('web')->user()->id;
+        $record = records::findorfail($id);
+
+        return view('records', compact('record'));
     }
 
     /**
@@ -135,6 +132,8 @@ class RecordsController extends Controller
             'password'  => 'required|min:8'
         ]);
 
+
+
         $verifyUser = records::where('email', $request->email)->first();
         if ($verifyUser) {
             if ($verifyUser->is_email_verified == 0) {
@@ -145,8 +144,8 @@ class RecordsController extends Controller
                     'password' => $request->get('password')
                 );
 
-                if (Auth::attempt($credentials)) { 
-                    return redirect('records')->with('success','You have Successfully loggedin');
+                if (auth()->guard('web')->attempt($credentials)) {
+                    return redirect('records')->with('success', 'You have Successfully loggedin');
                 }
                 return redirect('login')->with('error', 'Oppes! Your entered Password is invalid.');
             }
@@ -192,7 +191,7 @@ class RecordsController extends Controller
             'name' => 'required|string|min:3|max:255',
             'age' => 'required|string|min:1|max:3',
             'contact' => 'required|string|min:10|max:10',
-            'email' => 'required|unique:records,email,'.$id,
+            'email' => 'required|unique:records,email,' . $id,
         ]);
         try {
             $image = $request->profile;
@@ -212,33 +211,13 @@ class RecordsController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Request $request)
-    {
-        try {
-
-            // delete the record based on id
-            $record_details = records::findOrFail($request->id);
-            $record_details->delete();
-            Auth::logout();
-            return redirect('login')->with('success', 'Records is successfully deleted');
-        } catch (Exception $error) {
-            echo 'Message: ' . $error->getMessage();
-        }
-    }
-
-    /**
      * Write code on Method
      *
      * @return response()
      */
     public function logout()
     {
-        Auth::logout();
+        Auth::guard('web')->logout();
         return Redirect('login');
     }
 }

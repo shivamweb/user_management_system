@@ -48,6 +48,10 @@ class Kernel extends HttpKernel
         'Check_access_level' => [
             \App\Http\Middleware\Check_access_level::class,
         ],
+
+        'Admin_access_level' => [
+            \App\Http\Middleware\Admin_access_level::class,
+        ],
     ];
 
     /**
@@ -68,5 +72,6 @@ class Kernel extends HttpKernel
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'is_login' => \App\Http\Middleware\IsVerifyEmail::class,
+        'is_adminlogin' => \App\Http\Middleware\Is_adminlogin::class,
     ];
 }

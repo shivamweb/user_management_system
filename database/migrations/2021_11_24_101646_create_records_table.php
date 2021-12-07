@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\records;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -14,7 +15,7 @@ class CreateRecordsTable extends Migration
     public function up()
     {
         Schema::create('records', function (Blueprint $table) {
-            $table->id();
+            $table->increments('id');
             $table->binary('image_path');
             $table->string('name');
             $table->integer('age');
@@ -27,7 +28,8 @@ class CreateRecordsTable extends Migration
 
         Schema::create('users_verify', function (Blueprint $table) {
             $table->id();
-            $table->integer('user_id');
+            $table->integer('user_id')->unsigned();
+            $table->foreign('user_id')->references('id')->on('records')->onDelete('cascade');
             $table->string('token');
             $table->timestamps();
         });

@@ -18,7 +18,7 @@ class IsVerifyEmail
      */
     public function handle(Request $request, Closure $next)
     {
-        if (Auth::check()) {
+        if (Auth::guard('web')->check()) {
             return redirect('records')->with('message', 'You are already logged in. No need to go on login page.');
         }
 

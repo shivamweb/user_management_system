@@ -22,8 +22,9 @@
                 <hr>
             </h1>
 
-            <a href="/login"><button class="button button1" type="button">List all records</button></a>
+            <a href="/login"><button class="button button1" type="button">User Dashboard</button></a>
             <a href="new-record"><button class="button button1" type="button">Create New Entry</button></a>
+            <a href="admin-login"><button class="button button1" type="button">Admin Dashboard</button></a>
         </div>
     </div>
 </body>

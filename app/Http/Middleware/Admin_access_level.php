@@ -6,7 +6,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class Check_access_level
+class Admin_access_level
 {
     /**
      * Handle an incoming request.
@@ -17,8 +17,8 @@ class Check_access_level
      */
     public function handle(Request $request, Closure $next)
     {
-        if(!Auth::guard('web')->check()) {
-            return redirect('login')->with('error', 'Warning!! you are trying to access the system wrong way.');
+        if(!Auth::guard('admin')->check()) {
+            return redirect('admin-login')->with('error', 'Warning!! you are trying to access the system wrong way.');
         } 
         return $next($request);
     }

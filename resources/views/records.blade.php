@@ -38,7 +38,7 @@
                         <th>Age</th>
                         <th>Contact</th>
                         <th>Email</th>
-                        <th class="text-center" colspan="3">Action</th>
+                        <th class="text-center" colspan="2">Action</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -50,9 +50,7 @@
                         <td>{{$record->email}}</td>
                         <td class="text-center"><a href="{{ url('change-password')}}" class="btn btn-primary">Change Password</a></td>
                         <td class="text-center"><a href="{{ route('recordsController.edit', $record->id)}}" class="btn btn-primary">Edit</a></td>
-                        <td class="text-center"><a href="{{ route('delete',['id'=>$record->id])}}" class="btn btn-danger" onclick="return confirm('Are you sure, you want to delete?')">Delete</a></td>
                     </tr>
-
                 </tbody>
             </table>
         </div>
