@@ -2,12 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Traits\DataTrait;
+use App\Models\Post;
 use App\Models\records;
+use App\Models\User_login_History;
 use App\Models\UserVerify;
 use Exception;
 use Image;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Contracts\Session\Session;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -17,6 +21,8 @@ use Illuminate\Support\Facades\Response;
 
 class RecordsController extends Controller
 {
+    use DataTrait;
+
     /**
      * Display a listing of the resource.
      *
@@ -132,8 +138,6 @@ class RecordsController extends Controller
             'password'  => 'required|min:8'
         ]);
 
-
-
         $verifyUser = records::where('email', $request->email)->first();
         if ($verifyUser) {
             if ($verifyUser->is_email_verified == 0) {
@@ -144,7 +148,17 @@ class RecordsController extends Controller
                     'password' => $request->get('password')
                 );
 
+                //dd(auth()->guard('web')->attempt($credentials));
                 if (auth()->guard('web')->attempt($credentials)) {
+
+                    $credentials = array(
+                        'user_id'  => $verifyUser->id,
+                        'ip_address' => $_SERVER['REMOTE_ADDR'],
+                        'status' => 0,
+                    );
+                    $userlogin = User_login_History::create($credentials);
+                    $request->session()->put('user_login_id', $userlogin->id);
+
                     return redirect('records')->with('success', 'You have Successfully loggedin');
                 }
                 return redirect('login')->with('error', 'Oppes! Your entered Password is invalid.');
@@ -215,9 +229,111 @@ class RecordsController extends Controller
      *
      * @return response()
      */
-    public function logout()
+    public function logout(Request $request)
     {
+        $user_login_id = $request->session()->get('user_login_id');
+        $record_details = User_login_History::find($user_login_id);
+        $record_details->status = 1;
+        $record_details->update();
         Auth::guard('web')->logout();
         return Redirect('login');
+    }
+
+    public function newPost()
+    {
+        $id = auth()->guard('web')->user()->id;
+        $post = Post::create([
+            'records_id' => $id,
+            'title' => 'new logo',
+        ]);
+
+        $post->post_photo()->create([
+            'image' => 'images (1).jfif',
+        ]);
+        return redirect('post');
+    }
+
+    public function showPost()
+    {
+        /* $post = records::has('user_post')->get();
+        $post = records::withCount('user_post')->get(); */
+
+        //$post = records::whereBetween('created_at',['2001-12-01', '2021-12-10']) ->get();
+
+        //$post = records::select('age')->where('is_email_verified',1)->where('age','!=',8)->get(); 
+
+        /* $post = records::where('is_email_verified',1)->where('age','<',5)->get(); 
+        $post = records::where('is_email_verified','=',1)->where('age','<',5)->get(); 
+
+
+        $post = records::where(['is_email_verified','!=',0],['age','<',5])->get(); 
+        $post = records::where(['is_email_verified != 0'],['age < 5'])->get();  */
+
+        //$post = records::where(['is_email_verified' => 0,'age' => 8 ])->get();
+        
+        $search = 'baby';
+      /*   $data = records::where(function (Builder $query) use($search) {
+                    return $query->
+                            where('name','LIKE',$search)->
+                            orwhere('email','LIKE',$search);
+                })->get();
+        
+        dd($data); */
+
+        /* $post = records::whereHas('user_post', function ( Builder $query) use ($search){
+            $query->orWhere('title', 'like', '%'.$search.'%');
+           })->get(); */
+        
+
+        /* $post = records::where(function (Builder $query) use ($search) {
+            return $query->where('name','LIKE','%'.$search.'%')
+                         ->orWhere('email','LIKE','%'.$search.'%')
+                         ->orWhereHas('user_post', function (Builder $query) use ($search) {
+                            $query->Where('title', 'like', '%'.$search.'%');
+                        });
+            })->get();
+
+        dd($post); */
+
+        /*
+        if( auth()->guard('web')->check()){
+            $post = $post->where('records_id',$id);
+        }  
+         $post = $post->get();*/
+
+        $id = auth()->guard('web')->user()->id;
+        $posts = Post::select("*")->when(auth()->guard('web')->check(), function ($query) use ($id) {
+            $query->where('records_id', $id);
+        })->get();
+
+
+        //$posts = Post::orderByDesc('id')->get();
+        return view('post', compact('posts'));
+    }
+
+    public function deletedPost()
+    {
+        $id = auth()->guard('web')->user()->id;
+        $posts = Post::onlyTrashed()->where('records_id', '=', $id)->orderByDesc('id')->get();
+        //dd($data);
+        return view('deletedpost', compact('posts'));
+    }
+
+    public function restorePost(Request $request)
+    {
+        $posts = Post::where('id', $request->id)->restore();
+        return redirect('deleted-post')->with('success', 'You have Successfully restored the post');
+    }
+
+    public function showComments($id)
+    {
+        $post = Post::findorfail($id);
+        return view('comment', compact('post'));
+    }
+
+    public function deletepost(Request $request)
+    {
+        Post::where('id', $request->id)->delete();
+        return redirect('post');
     }
 }

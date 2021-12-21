@@ -52,6 +52,14 @@ Route::get('forgotPassword', function () {
     return view('forgotPassword');
 });
 
+//this route get the token from user email and show password reset form
+Route::get('reset-password/{token}', 'App\Http\Controllers\ForgotPasswordController@showResetPasswordForm')->name('reset.password.get');
+
+
+//submit the new password, when user forget password
+Route::post('submitResetPasswordForm', 'App\Http\Controllers\ForgotPasswordController@submitResetPasswordForm');
+
+
 /*
 |--------------------------------------------------------------------------
 | Group Routes => Check_access_level 
@@ -71,18 +79,23 @@ Route::group(['middleware' => ['Check_access_level']], function () {
     //logout the user
     Route::get('/logout', 'App\Http\Controllers\RecordsController@logout')->name('logout');
 
-    //this route get the token from user email and show password reset form
-    Route::get('reset-password/{token}', 'App\Http\Controllers\ForgotPasswordController@showResetPasswordForm')->name('reset.password.get');
-
-    //submit the new password, when user forget password
-    Route::post('submitResetPasswordForm', 'App\Http\Controllers\ForgotPasswordController@submitResetPasswordForm');
-
-
     Route::get('change-password', function () {
         return view('changePassword');
     });
 
     Route::post('change-password', 'App\Http\Controllers\ForgotPasswordController@changePassword');
+
+    // create new post
+    Route::get('new-post', 'App\Http\Controllers\RecordsController@newPost');
+    
+    // show all post
+    //Route::get('post', 'App\Http\Controllers\RecordsController@showPost');
+
+    Route::get('post', function () {
+        return view('post');
+    });
+
+    Route::get('comments/{id}', 'App\Http\Controllers\RecordsController@showComments');
 });
 
 Route::group(['middleware' => ['Admin_access_level']], function () {
@@ -100,8 +113,25 @@ Route::group(['middleware' => ['Admin_access_level']], function () {
     Route::get('report', 'App\Http\Controllers\ReportsController@show_reports');
 
     //show the user registration history in graph in report display
-   //Route::get('user-login-report', 'App\Http\Controllers\ReportsController@user_login_report');
-    Route::get('user-login-report', function () {
-        return view('user-login-report');
-    });
+    Route::get('user-login-report', 'App\Http\Controllers\ReportsController@select_user');
+    
+    Route::get('user-login-history/{id?}', 'App\Http\Controllers\ReportsController@user_login_history');
+});
+
+Route::get('relation', 'App\Http\Controllers\ReportsController@relation');
+
+Route::get('create-product', 'App\Http\Controllers\ProductController@createProduct');
+
+Route::get('belongsToMany', 'App\Http\Controllers\ProductController@manyToMany');
+
+Route::get('test', 'App\Http\Controllers\HomeController@test');
+
+Route::get('/delete-post/{id?}', 'App\Http\Controllers\RecordsController@deletepost')->name('post-delete');
+
+Route::get('/deleted-post', 'App\Http\Controllers\RecordsController@deletedPost')->name('deletedPost');
+
+Route::get('/restore-post/{id?}', 'App\Http\Controllers\RecordsController@restorepost')->name('post-restore');
+
+Route::get('master', function () {
+    return view('master');
 });

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\photo;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -26,5 +27,25 @@ class HomeController extends Controller
         return view('home');
     }
 
-    
+    public function test()
+    {
+        $chunks = photo::lazy();
+
+        dd($chunks);
+        return view('home', compact('chunks')); 
+
+
+
+        /* $row =  photo::all()->reject(function ($id) {
+            return ($id->id == 2);
+        });
+        dd($row); 
+
+        $collection = collect(['taylor', 'abigail', null, 123, 456, 789])
+            ->reject(function ($name) {
+                return empty($name);
+            });
+
+        dd($collection); */
+    }
 }

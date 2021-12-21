@@ -16,8 +16,23 @@ class records extends  Authenticatable
 
     protected $fillable = ['name', 'age', 'contact', 'email', 'password', 'image_path'];
 
-    public function user_hostory()
+    public function user_history()
     {
-        return $this->hasMany('App\User_login_History');
+        return $this->hasMany(User_login_History::class, 'user_id', 'id');
+    }
+
+    public function getNameAttribute($value)
+    {
+        return strtoupper($value);
+    }
+
+    public function setNameAttribute($value)
+    {
+       $this->attributes['name'] = strtolower($value);
+    }
+
+    public function user_post()
+    {
+        return $this->hasMany(Post::class,'records_id','id');
     }
 }

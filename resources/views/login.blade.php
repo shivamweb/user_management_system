@@ -5,6 +5,11 @@
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <link href="{{ asset('/css/login_style.css') }}" rel="stylesheet">
+
+    <meta name="google-signin-scope" content="profile email">
+    <meta name="google-signin-client_id" content="653245736473-n0rfheqp5o0f6dqj55qr1sk90l3i8vi3.apps.googleusercontent.com">
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+
     <script type="text/javascript">
         function preventBack() {
             window.history.forward();
@@ -41,12 +46,32 @@
 
             <!-- Login Form -->
             <form method="post" action="{{ url('/checklogin') }}" enctype="multipart/form-data">
-            @csrf
+                @csrf
                 <input type="text" id="login" class="fadeIn second" name="email" placeholder="login" required>
                 <input type="text" id="password" class="fadeIn third" name="password" placeholder="password" required minlength="8">
                 <input type="submit" class="fadeIn fourth" value="Log In">
             </form>
 
+            <div id="formFooter">
+            <p>---------OR-------------</p>
+            <div class="g-signin2" data-onsuccess="onSignIn" data-theme="dark" style="margin-left: 35%;"></div>
+            <script>
+                function onSignIn(googleUser) {
+                    // Useful data for your client-side scripts:
+                    var profile = googleUser.getBasicProfile();
+                    console.log("ID: " + profile.getId()); // Don't send this directly to your server!
+                    console.log('Full Name: ' + profile.getName());
+                    console.log('Given Name: ' + profile.getGivenName());
+                    console.log('Family Name: ' + profile.getFamilyName());
+                    console.log("Image URL: " + profile.getImageUrl());
+                    console.log("Email: " + profile.getEmail());
+
+                    // The ID token you need to pass to your backend:
+                    var id_token = googleUser.getAuthResponse().id_token;
+                    console.log("ID Token: " + id_token);
+                }
+            </script>
+            </div>
             <!-- Remind Passowrd -->
             <div id="formFooter">
                 <a class="underlineHover" href="{{url('forgotPassword')}}">Forgot Password? </a> OR

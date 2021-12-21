@@ -3,15 +3,18 @@
 namespace App\Http\Controllers;
 
 use App\Models\records;
+use App\Models\User_login_History;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class ReportsController extends Controller
 {
   private $data;
 
-  public function show_reports(){
+  public function show_reports()
+  {
     $this->show_user_reg_history();
     $this->show_verified_user_data();
     //dd($this->data);
@@ -36,7 +39,8 @@ class ReportsController extends Controller
     $this->data['chart_data'] = json_encode($user_reg_history);
   }
 
-  public function show_verified_user_data(){
+  public function show_verified_user_data()
+  {
 
     $query = DB::raw("(CASE WHEN is_email_verified='1' THEN 'Verified'  ELSE 'Un-Verified' END) as status");
     $record = DB::table('records')->select(DB::raw("COUNT(*) as count"), $query)->groupBy('status')->get();
@@ -48,10 +52,28 @@ class ReportsController extends Controller
       $verified_user_data['data'][] = (int) $row->count;
     }
 
-    $this->data['isEmailVerified_data'] = json_encode($verified_user_data);    
+    $this->data['isEmailVerified_data'] = json_encode($verified_user_data);
   }
 
-  public function user_login_report(){
-    //dd($_SERVER['REMOTE_ADDR']);
+  public function select_user(){
+    $users = records::all();
+    return view('user-login-report', compact('users'));
+    //$this->user_login_report(1);
+  }
+
+  public function user_login_history(Request $request)
+  {
+    if (Auth::guard('admin')->check()) {
+      $historys = records::findorfail($request->id)->user_history;
+      return(json_encode($historys)); 
+    }
+  }
+
+  public function relation (Request $request)
+  {
+    if (Auth::guard('admin')->check()) {
+      $historys = User_login_History::all();
+      return view('relation',compact('historys'));
+    }
   }
 }

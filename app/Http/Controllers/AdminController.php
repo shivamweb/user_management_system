@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Traits\DataTrait;
 use App\Models\Admin;
 use App\Models\records;
 use App\Models\UserVerify;
@@ -11,7 +12,7 @@ use Illuminate\Auth\SessionGuard;
 
 class AdminController  extends Controller
 {
-
+    use DataTrait;
     /** 
      * Display a listing of the resource. 
      * 
@@ -19,8 +20,8 @@ class AdminController  extends Controller
     public function index()
     {
         if (auth()->guard('admin')->check()) {
-            $records = records::all();
-            return view('admin-dashboard', compact('records'));
+            $records = records::paginate( $perPage = 3, $columns = ['*'], $pageName = 'records');
+            return view('admin-dashboard', ['records'=>$records]);
         } else {
             return redirect('admin-login')->with('error', 'Oppes! something went wrong. Please login again.');
         }
@@ -42,17 +43,6 @@ class AdminController  extends Controller
             return redirect('admin-login')->with('error', 'Oppes! Your entered Password is invalid.');
         }
         return redirect('admin-login')->with('error', 'Oppes! Your entered Email is invalid. Does not exist!');
-    }
-
-
-    public function show_admin_dashboard()
-    {
-        if (Auth::guard('admin')->check()) {
-            dd('sdcsdasd');
-            $this->index();
-        } else {
-            return redirect('admin-login')->with('error', 'Oppes! something went wrong. Please login again.');
-        }
     }
 
     /**

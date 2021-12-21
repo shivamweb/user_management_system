@@ -15,10 +15,10 @@ class CreateUserLoginHistoriesTable extends Migration
     {
         Schema::create('user_login__histories', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('user_id');
-            $table->integer('ip_address');
-            $table->integer('duration');
-            $table->rememberToken();
+            $table->integer('user_id')->unsigned();
+            $table->foreign('user_id')->references('id')->on('records')->onDelete('cascade');
+            $table->string('ip_address');
+            $table->integer('status');
             $table->timestamps();
         });
     }
