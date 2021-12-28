@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\photo;
 use Illuminate\Http\Request;
+use CustomHelper;
 
 class HomeController extends Controller
 {
@@ -29,11 +30,11 @@ class HomeController extends Controller
 
     public function test()
     {
-        $chunks = photo::lazy();
+        /* $chunks = photo::lazy();
 
         dd($chunks);
         return view('home', compact('chunks')); 
-
+ */
 
 
         /* $row =  photo::all()->reject(function ($id) {
@@ -47,5 +48,10 @@ class HomeController extends Controller
             });
 
         dd($collection); */
+
+        $text = " this is demo text";
+        $text = textToUpper($text);
+        $location = CustomHelper::get_user_loction();
+        dd($text, $location);
     }
 }

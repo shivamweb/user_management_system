@@ -9,16 +9,6 @@
     <meta name="google-signin-scope" content="profile email">
     <meta name="google-signin-client_id" content="653245736473-n0rfheqp5o0f6dqj55qr1sk90l3i8vi3.apps.googleusercontent.com">
     <script src="https://apis.google.com/js/platform.js" async defer></script>
-
-    <script type="text/javascript">
-        function preventBack() {
-            window.history.forward();
-        }
-        setTimeout("preventBack()", 0);
-        window.onunload = function() {
-            null
-        };
-    </script>
     <!------ Include the above in your HEAD tag ---------->
 </head>
 
@@ -53,24 +43,24 @@
             </form>
 
             <div id="formFooter">
-            <p>---------OR-------------</p>
-            <div class="g-signin2" data-onsuccess="onSignIn" data-theme="dark" style="margin-left: 35%;"></div>
-            <script>
-                function onSignIn(googleUser) {
-                    // Useful data for your client-side scripts:
-                    var profile = googleUser.getBasicProfile();
-                    console.log("ID: " + profile.getId()); // Don't send this directly to your server!
-                    console.log('Full Name: ' + profile.getName());
-                    console.log('Given Name: ' + profile.getGivenName());
-                    console.log('Family Name: ' + profile.getFamilyName());
-                    console.log("Image URL: " + profile.getImageUrl());
-                    console.log("Email: " + profile.getEmail());
+                <p>---------OR-------------</p>
+                <!--div class="g-signin2" data-onsuccess="onSignIn" data-theme="dark" style="margin-left: 35%;"></div -->
+                <a href="{{ url('auth/google') }}" class="fadeIn fourth" style="margin-top: 0px !important;padding: 5px;border-radius:7px;">
+                    <img src="image/G-loginbutton.png" style="height: 40px;" />
+                </a>
 
-                    // The ID token you need to pass to your backend:
-                    var id_token = googleUser.getAuthResponse().id_token;
-                    console.log("ID Token: " + id_token);
-                }
-            </script>
+                <a href="{{ url('auth/github') }}" class="fadeIn fourth" style="margin-top: 0px !important;padding: 5px;border-radius:7px;">
+                    <img src="image/login-github.jpg" style="height: 40px;" />
+                </a><br>
+
+                <a href="{{ url('auth/twitter') }}" class="fadeIn fourth" style="margin-top: 0px !important;padding: 5px;border-radius:7px;">
+                    <img src="image/login-twitter.png" style="height: 40px;" />
+                </a>
+
+                <a href="{{ url('auth/facebook') }}" class="fadeIn fourth" style="margin-top: 0px !important;padding: 5px;border-radius:7px;">
+                    <img src="image/login-facebook.png" style="height: 40px;" />
+                </a>
+
             </div>
             <!-- Remind Passowrd -->
             <div id="formFooter">

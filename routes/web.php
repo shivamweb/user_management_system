@@ -135,3 +135,19 @@ Route::get('/restore-post/{id?}', 'App\Http\Controllers\RecordsController@restor
 Route::get('master', function () {
     return view('master');
 });
+
+// social media login through google 
+Route::get('auth/google', 'App\Http\Controllers\GoogleSocialiteController@redirectToGoogle');
+Route::get('callback/google', 'App\Http\Controllers\GoogleSocialiteController@handleCallback');
+
+// social media login through github 
+Route::get('auth/github', 'App\Http\Controllers\GithubSocialiteController@redirectToProvider');
+Route::get('auth/github/callback', 'App\Http\Controllers\GithubSocialiteController@handleProviderCallback');
+
+// social media login through facebook 
+Route::get('auth/facebook', 'App\Http\Controllers\FacebookSocialiteController@redirectToProvider');
+Route::get('auth/facebook/callback', 'App\Http\Controllers\FacebookSocialiteController@handleProviderCallback');
+
+// social media login through twitter 
+Route::get('auth/twitter', 'App\Http\Controllers\TwitterSocialiteController@redirectToProvider');
+Route::get('auth/twitter/callback', 'App\Http\Controllers\TwitterSocialiteController@handleProviderCallback');

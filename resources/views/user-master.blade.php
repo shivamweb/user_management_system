@@ -38,6 +38,11 @@
     <div class="container">
         @yield('content')
     </div>
+    <div class="footer">
+        {{ textToUpper('Develop by shivam') }}<br>
+        @php($location = CustomHelper::get_user_loction())
+        <p> {{$location->countryName }} | {{ $location->cityName }}, {{ $location->regionName }}  From your Location History - Update location </p>
+    </div>
 </body>
 
 </html>

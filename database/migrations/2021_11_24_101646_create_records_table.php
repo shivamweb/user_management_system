@@ -23,6 +23,8 @@ class CreateRecordsTable extends Migration
             $table->string('email');
             $table->string('password');
             $table->boolean('is_email_verified')->default(0);
+            $table->string('social_id')->nullable();
+            $table->string('social_type')->nullable();
             $table->timestamps();
         });
 

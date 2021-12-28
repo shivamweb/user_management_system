@@ -14,7 +14,23 @@ class records extends  Authenticatable
     protected $primaryKey = 'id';
     protected $guard = 'web';
 
-    protected $fillable = ['name', 'age', 'contact', 'email', 'password', 'image_path'];
+    protected $fillable = [
+        'name', 
+        'age', 
+        'contact', 
+        'email', 
+        'password', 
+        'image_path',
+        'social_id',
+        'social_type'
+    ];
+
+    protected $hidden = [
+        'password',
+        'remember_token',
+        'two_factor_recovery_codes',
+        'two_factor_secret',
+    ];
 
     public function user_history()
     {

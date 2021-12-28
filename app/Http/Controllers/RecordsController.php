@@ -232,6 +232,7 @@ class RecordsController extends Controller
     public function logout(Request $request)
     {
         $user_login_id = $request->session()->get('user_login_id');
+
         $record_details = User_login_History::find($user_login_id);
         $record_details->status = 1;
         $record_details->update();
